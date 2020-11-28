@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ProcessScheduler.Core.Pickers
 {
-    public class SjfProcessPicker : ProcessPicker
+    public class ShortestJobFirstPicker : ProcessPicker
     {
         private readonly SortedList<TimeSpan, Queue<Process>> _processQueue = new();
 

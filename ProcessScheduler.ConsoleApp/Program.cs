@@ -18,7 +18,7 @@ namespace ProcessScheduler.ConsoleApp
                 new(4, "D", "Daniel", ts(1), ts(1)),
             };
 
-            var picker = new SjfProcessPicker();
+            var picker = new ShortestJobFirstPicker();
 
             picker.ProcessCreated += Picker_ProcessCreated;
 
