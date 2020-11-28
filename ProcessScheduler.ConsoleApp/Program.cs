@@ -10,7 +10,13 @@ namespace ProcessScheduler.ConsoleApp
     {
         static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<ProcessSchedulerOptions>(args)
+            new Parser(settings =>
+            {
+                settings.CaseSensitive = false;
+                settings.CaseInsensitiveEnumValues = true;
+                settings.HelpWriter = Console.Error;
+
+            }).ParseArguments<ProcessSchedulerOptions>(args)
                 .WithParsed(opt =>
                 {
                     var processes = ProcessParser.ParseProcesses(opt.FileName);
