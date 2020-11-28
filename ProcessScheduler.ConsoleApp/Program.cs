@@ -1,6 +1,8 @@
 ﻿using ProcessScheduler.Core;
 using ProcessScheduler.Core.Pickers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ProcessScheduler.ConsoleApp
 {
@@ -10,13 +12,13 @@ namespace ProcessScheduler.ConsoleApp
         {
             var processes = new Process[]
             {
-                new(1, "A", "Daniel", ts(1), ts(0)),
-                new(2, "B", "Daniel", ts(2), ts(0)),
+                new(1, "A", "Daniel", ts(2), ts(0)),
+                new(2, "B", "Daniel", ts(1), ts(0)),
                 new(3, "C", "Daniel", ts(1), ts(5)),
                 new(4, "D", "Daniel", ts(1), ts(1)),
             };
 
-            var picker = new FifoProcessPicker();
+            var picker = new SjfProcessPicker();
 
             picker.ProcessCreated += Picker_ProcessCreated;
 
@@ -33,24 +35,25 @@ namespace ProcessScheduler.ConsoleApp
             static TimeSpan ts(int val) => TimeSpan.FromSeconds(val);
         }
 
-        private static void Picker_ProcessCreated(ProcessEventArgs args)
+        private static void Picker_ProcessCreated(ProcessEventArgs args, IEnumerable<Process> processes)
         {
-            Log(args.CurrentTime, $"{args.Process} was scheduled. Duration: {args.Process.TotalExecutionTime}");
+            var queue = string.Join("<-", processes.Select(p => $"[{p.Id}]"));
+            Log(args.CurrentTime, $"{args.Process} was scheduled. {queue}");
         }
 
         private static void Manager_ProcessExecutionStopped(ProcessExecutionEventArgs args)
         {
-            Log(args.CurrentTime, $"{args.Process} is now stopped. Duration: {args.Process.CurrentExecutionTime}");
+            Log(args.CurrentTime, $"{args.Process} is now stopped.");
         }
 
         private static void Manager_ProcessExecutionStarted(ProcessExecutionEventArgs args)
         {
-            Log(args.CurrentTime, $"{args.Process} is now running. Duration: {args.Process.CurrentExecutionTime}");
+            Log(args.CurrentTime, $"{args.Process} is now running.");
         }
 
         private static void Manager_ProcessCompleted(ProcessEventArgs args)
         {
-            Log(args.CurrentTime, $"{args.Process} finished executing. Duration: {args.Process.TotalExecutionTime}");
+            Log(args.CurrentTime, $"{args.Process} finished executing.");
         }
 
         private static void Log(TimeSpan time, string message)

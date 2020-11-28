@@ -1,16 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ProcessScheduler.Core
 {
     public abstract class ProcessPicker
     {
-        public abstract bool HasProcesses();
+        public int IncomingProcesses { get; protected set; }
+
+        public event ProcessCreated? ProcessCreated;
+
+        public virtual bool HasProcesses() => IncomingProcesses > 0;
 
         public abstract ProcessToken? GetNext();
 
         public abstract void RemoveProcess(Process process);
 
-        public abstract void AddProcess(Process process, ProcessManager manager);
+        public virtual void AddProcess(Process process, ProcessManager manager)
+        {
+            if (process.SubmissionTime > TimeSpan.Zero)
+            {
+                IncomingProcesses++;
+
+                manager.RegisterEvent(process.SubmissionTime, (p) =>
+                {
+                    AddImpl(process);
+
+                    IncomingProcesses--;
+
+                    ProcessCreated?.Invoke(new(process, p, process.SubmissionTime), GetAllProcesses());
+                });
+            }
+            else
+            {
+                AddImpl(process);
+
+                ProcessCreated?.Invoke(new(process, null, process.SubmissionTime), GetAllProcesses());
+            }
+        }
+
+        protected abstract void AddImpl(Process process);
+
+        protected abstract IEnumerable<Process> GetAllProcesses();
     }
 
     public class ProcessToken : IDisposable
