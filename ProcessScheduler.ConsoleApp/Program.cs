@@ -18,7 +18,7 @@ namespace ProcessScheduler.ConsoleApp
                 new(4, "D", "Daniel", ts(1), ts(1)),
             };
 
-            var picker = new ShortestJobFirstPicker();
+            var picker = new RoundRobinPicker(TimeSpan.FromMilliseconds(100));
 
             picker.ProcessCreated += Picker_ProcessCreated;
 
@@ -58,7 +58,7 @@ namespace ProcessScheduler.ConsoleApp
 
         private static void Log(TimeSpan time, string message)
         {
-            Console.WriteLine($"{time}| {message}");
+            Console.WriteLine($"{time:G}| {message}");
         }
     }
 }

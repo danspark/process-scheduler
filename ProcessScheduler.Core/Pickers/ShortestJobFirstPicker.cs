@@ -49,7 +49,7 @@ namespace ProcessScheduler.Core.Pickers
             _processQueue[executionTime].Enqueue(process);
         }
 
-        protected override IEnumerable<Process> GetAllProcesses()
+        public override IEnumerable<Process> GetAllProcesses()
         {
             return _processQueue.SelectMany(kvp => kvp.Value.ToList());
         }

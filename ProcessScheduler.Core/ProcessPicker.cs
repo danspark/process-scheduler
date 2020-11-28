@@ -40,7 +40,7 @@ namespace ProcessScheduler.Core
 
         protected abstract void AddImpl(Process process);
 
-        protected abstract IEnumerable<Process> GetAllProcesses();
+        public abstract IEnumerable<Process> GetAllProcesses();
     }
 
     public class ProcessToken : IDisposable

@@ -41,7 +41,7 @@ namespace ProcessScheduler.Core.Pickers
             _processes.AddLast(process);
         }
 
-        protected override IEnumerable<Process> GetAllProcesses()
+        public override IEnumerable<Process> GetAllProcesses()
         {
             return _processes.ToList();
         }

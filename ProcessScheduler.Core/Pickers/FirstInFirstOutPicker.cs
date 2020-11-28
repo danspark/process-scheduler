@@ -32,7 +32,7 @@ namespace ProcessScheduler.Core.Pickers
             _processQueue.Enqueue(process);
         }
 
-        protected override IEnumerable<Process> GetAllProcesses()
+        public override IEnumerable<Process> GetAllProcesses()
         {
             return _processQueue.ToList();
         }
