@@ -1,5 +1,6 @@
-﻿using ProcessScheduler.Core;
-using ProcessScheduler.Core.Pickers;
+﻿using CommandLine;
+using ProcessScheduler.Core;
+using ProcessScheduler.Core.Csv;
 using System;
 using System.Linq;
 
@@ -9,25 +10,23 @@ namespace ProcessScheduler.ConsoleApp
     {
         static void Main(string[] args)
         {
-            var processes = new Process[]
-            {
-                new(1, "A", "Daniel", ts(2), ts(0)),
-                new(2, "B", "Daniel", ts(1), ts(0)),
-                new(3, "C", "Daniel", ts(1), ts(5)),
-                new(4, "D", "Daniel", ts(1), ts(1)),
-            };
+            Parser.Default.ParseArguments<ProcessSchedulerOptions>(args)
+                .WithParsed(opt =>
+                {
+                    var processes = ProcessParser.ParseProcesses(opt.FileName);
 
-            var picker = new RoundRobinPicker(TimeSpan.FromMilliseconds(700));
+                    var picker = opt.GetProcessPicker();
 
-            picker.ProcessCreated += Picker_ProcessCreated;
+                    picker.ProcessCreated += Picker_ProcessCreated;
 
-            var manager = new ProcessManager();
+                    var manager = new ProcessManager();
 
-            manager.ProcessCompleted += Manager_ProcessCompleted;
-            manager.ProcessExecutionStarted += Manager_ProcessExecutionStarted;
-            manager.ProcessExecutionStopped += Manager_ProcessExecutionStopped;
+                    manager.ProcessCompleted += Manager_ProcessCompleted;
+                    manager.ProcessExecutionStarted += Manager_ProcessExecutionStarted;
+                    manager.ProcessExecutionStopped += Manager_ProcessExecutionStopped;
 
-            manager.Run(processes, picker);
+                    manager.Run(processes, picker);
+                });
 
             static TimeSpan ts(int val) => TimeSpan.FromSeconds(val);
         }
@@ -65,7 +64,7 @@ namespace ProcessScheduler.ConsoleApp
 
         private static void Line()
         {
-            Console.WriteLine(new string(Enumerable.Range(0, Console.WindowWidth).Select(i => '=').ToArray()));
+            Console.WriteLine(new string(Enumerable.Range(0, Console.WindowWidth - 1).Select(i => '=').Prepend('|').ToArray()));
         }
 
         private static string Ts(TimeSpan value) => $"{value:hh\\:mm\\:ss\\.fff}";

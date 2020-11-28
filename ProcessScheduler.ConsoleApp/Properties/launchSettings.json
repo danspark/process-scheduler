@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ProcessScheduler.ConsoleApp": {
+      "commandName": "Project",
+      "commandLineArgs": "-f \"test.csv\""
+    }
+  }
+}
