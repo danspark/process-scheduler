@@ -36,7 +36,7 @@ namespace ProcessScheduler.Core
 
         internal TimeSpan WaitForNextEvent()
         {
-            var (time, actions) = _events.OrderBy(kvp => kvp.Key).FirstOrDefault();
+            var (time, _) = _events.OrderBy(kvp => kvp.Key).FirstOrDefault();
 
             TriggerRegisteredEvents(time, time, null);
 
