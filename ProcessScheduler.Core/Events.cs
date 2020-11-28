@@ -2,10 +2,10 @@
 
 namespace ProcessScheduler.Core
 {
-    public record ProcessEventArgs(Process Process, TimeSpan CurrentTime);
+    public record ProcessEventArgs(Process Process, Process ProcessInExecution, TimeSpan CurrentTime);
 
     public record ProcessExecutionEventArgs(Process Process, TimeSpan CurrentTime, TimeSpan Duration) 
-        : ProcessEventArgs(Process, CurrentTime);
+        : ProcessEventArgs(Process, Process, CurrentTime);
 
     public delegate void ProcessCreated(ProcessEventArgs args);
 
