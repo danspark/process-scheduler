@@ -24,7 +24,7 @@ namespace ProcessScheduler.Core
 
             if (executionTime > TotalExecutionTime)
             {
-                duration = TotalExecutionTime - executionTime;
+                duration = TotalExecutionTime - CurrentExecutionTime;
                 
                 executionTime = TotalExecutionTime;
             }
@@ -45,7 +45,7 @@ namespace ProcessScheduler.Core
 
         public override string ToString()
         {
-            return $"[{Id}] {Name}";
+            return $"{Name} ({Id})";
         }
     }
 }

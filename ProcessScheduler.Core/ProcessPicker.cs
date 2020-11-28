@@ -27,14 +27,14 @@ namespace ProcessScheduler.Core
 
                     IncomingProcesses--;
 
-                    ProcessCreated?.Invoke(new(process, p, process.SubmissionTime), GetAllProcesses());
+                    ProcessCreated?.Invoke(process, new(p, process.SubmissionTime, TimeSpan.Zero, GetAllProcesses()));
                 });
             }
             else
             {
                 AddImpl(process);
 
-                ProcessCreated?.Invoke(new(process, null, process.SubmissionTime), GetAllProcesses());
+                ProcessCreated?.Invoke(process, new(null, process.SubmissionTime, TimeSpan.Zero, GetAllProcesses()));
             }
         }
 

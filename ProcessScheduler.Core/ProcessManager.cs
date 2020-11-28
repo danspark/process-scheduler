@@ -14,9 +14,30 @@ namespace ProcessScheduler.Core
 
         public event ProcessCompleted? ProcessCompleted;
 
-        public TimeSpan ExecuteProcess(Process process, TimeSpan currentTime, TimeSpan duration)
+        public void Run(IEnumerable<Process> processes, ProcessPicker picker)
         {
-            ProcessExecutionStarted?.Invoke(new(process, currentTime, duration));
+            AddProcesses(processes, picker);
+
+            TimeSpan time = TimeSpan.Zero;
+
+            while (picker.HasProcesses())
+            {
+                using var token = picker.GetNext();
+
+                if (token is null)
+                {
+                    time = WaitForNextEvent();
+
+                    continue;
+                }
+
+                time += ExecuteProcess(token.Process, picker, time, token.Duration);
+            }
+        }
+
+        private TimeSpan ExecuteProcess(Process process, ProcessPicker picker, TimeSpan currentTime, TimeSpan duration)
+        {
+            ProcessExecutionStarted?.Invoke(new(process, currentTime, duration, picker.GetAllProcesses()));
 
             TimeSpan initialTime = currentTime;
 
@@ -24,11 +45,11 @@ namespace ProcessScheduler.Core
 
             TriggerRegisteredEvents(initialTime, currentTime, process);
 
-            ProcessExecutionStopped?.Invoke(new(process, currentTime, duration));
+            ProcessExecutionStopped?.Invoke(new(process, currentTime, duration, picker.GetAllProcesses()));
 
             if (process.IsCompleted())
             {
-                ProcessCompleted?.Invoke(new(process, process, currentTime));
+                ProcessCompleted?.Invoke(new(process, currentTime, duration, picker.GetAllProcesses()));
             }
 
             return currentTime - initialTime;
@@ -68,6 +89,11 @@ namespace ProcessScheduler.Core
             }
 
             _events[time].Add(action);
+        }
+
+        private void AddProcesses(IEnumerable<Process> processes, ProcessPicker picker)
+        {
+            foreach (var process in processes) picker.AddProcess(process, this);
         }
     }
 }
