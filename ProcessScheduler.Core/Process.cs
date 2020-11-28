@@ -33,5 +33,19 @@ namespace ProcessScheduler.Core
 
             return duration;
         }
+
+        public Process(int id, string name, string user, TimeSpan totalExecutionTime, TimeSpan? submissionTime = null)
+        {
+            Id = id;
+            Name = name;
+            User = user;
+            TotalExecutionTime = totalExecutionTime;
+            SubmissionTime = submissionTime ?? TimeSpan.Zero;
+        }
+
+        public override string ToString()
+        {
+            return $"[{Id}] {Name}";
+        }
     }
 }

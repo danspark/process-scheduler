@@ -6,7 +6,7 @@ namespace ProcessScheduler.Core
     {
         public abstract bool HasProcesses();
 
-        public abstract ProcessToken GetNextProcess();
+        public abstract ProcessToken? GetNext();
 
         public abstract void RemoveProcess(Process process);
 
@@ -19,10 +19,13 @@ namespace ProcessScheduler.Core
 
         public Process Process { get; }
 
-        internal ProcessToken(ProcessPicker picker, Process process)
+        public TimeSpan Duration { get; }
+
+        internal ProcessToken(ProcessPicker picker, Process process, TimeSpan duration)
         {
             _picker = picker;
             Process = process;
+            Duration = duration;
         }
 
         public void Dispose()

@@ -9,7 +9,7 @@ namespace ProcessScheduler.Core
 
     public delegate void ProcessCreated(ProcessEventArgs args);
 
-    public delegate void ProcessFinished(ProcessEventArgs args);
+    public delegate void ProcessCompleted(ProcessEventArgs args);
     
     public delegate void ProcessExecutionStarted(ProcessExecutionEventArgs args);
                                                 

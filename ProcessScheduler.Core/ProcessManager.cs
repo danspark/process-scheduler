@@ -6,11 +6,13 @@ namespace ProcessScheduler.Core
 {
     public class ProcessManager
     {
-        private readonly Dictionary<TimeSpan, List<Action<Process>>> _events = new();
+        private readonly Dictionary<TimeSpan, List<Action<Process?>>> _events = new();
 
         public event ProcessExecutionStarted? ProcessExecutionStarted;
 
         public event ProcessExecutionStopped? ProcessExecutionStopped;
+
+        public event ProcessCompleted? ProcessCompleted;
 
         public TimeSpan ExecuteProcess(Process process, TimeSpan currentTime, TimeSpan duration)
         {
@@ -24,10 +26,24 @@ namespace ProcessScheduler.Core
 
             ProcessExecutionStopped?.Invoke(new(process, currentTime, duration));
 
-            return currentTime;
+            if (process.IsCompleted())
+            {
+                ProcessCompleted?.Invoke(new(process, process, currentTime));
+            }
+
+            return currentTime - initialTime;
         }
 
-        private void TriggerRegisteredEvents(TimeSpan initialTime, TimeSpan finalTime, Process currentProcess)
+        internal TimeSpan WaitForNextEvent()
+        {
+            var (time, actions) = _events.OrderBy(kvp => kvp.Key).FirstOrDefault();
+
+            TriggerRegisteredEvents(time, time, null);
+
+            return time;
+        }
+
+        private void TriggerRegisteredEvents(TimeSpan initialTime, TimeSpan finalTime, Process? currentProcess)
         {
             var events = _events.Where(kvp => kvp.Key >= initialTime && kvp.Key <= finalTime)
                 .OrderBy(kvp => kvp.Key)
@@ -44,11 +60,11 @@ namespace ProcessScheduler.Core
             }
         }
 
-        public void RegisterEvent(TimeSpan time, Action<Process> action)
+        public void RegisterEvent(TimeSpan time, Action<Process?> action)
         {
             if (_events.ContainsKey(time) is false)
             {
-                _events[time] = new List<Action<Process>>();
+                _events[time] = new List<Action<Process?>>();
             }
 
             _events[time].Add(action);

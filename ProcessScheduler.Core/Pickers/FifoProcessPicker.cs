@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ProcessScheduler.Core.Pickers
 {
@@ -20,6 +21,8 @@ namespace ProcessScheduler.Core.Pickers
                 {
                     _processQueue.Enqueue(process);
 
+                    _incomingProcesses--;
+
                     ProcessCreated?.Invoke(new(process, p, process.SubmissionTime));
                 });
             }
@@ -27,13 +30,20 @@ namespace ProcessScheduler.Core.Pickers
             {
                 _processQueue.Enqueue(process);
 
-                ProcessCreated?.Invoke(new(process, p, process.SubmissionTime));
+                ProcessCreated?.Invoke(new(process, null, process.SubmissionTime));
             }
         }
 
-        public override ProcessToken GetNextProcess()
+        public override ProcessToken? GetNext()
         {
-            return new ProcessToken(this, _processQueue.Dequeue());
+            if (_processQueue.Any())
+            {
+                var process = _processQueue.Dequeue();
+
+                return new(this, process, process.TotalExecutionTime);
+            }
+
+            return HasProcesses() ? null : throw new InvalidOperationException("No incoming processes");
         }
 
         public override bool HasProcesses() => _processQueue.Count > 0 || _incomingProcesses > 0;
