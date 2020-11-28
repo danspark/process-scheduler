@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ProcessScheduler.Core.Pickers
 {
-    public class FifoProcessPicker : ProcessPicker
+    public class FirstInFirstOutPicker : ProcessPicker
     {
         protected readonly Queue<Process> _processQueue = new();
 
