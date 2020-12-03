@@ -17,10 +17,10 @@ namespace ProcessScheduler.Core.Pickers
                 return new(this, process, process.TotalExecutionTime);
             }
 
-            return HasProcesses() ? null : throw new InvalidOperationException("No incoming processes");
+            return HasProcessesImpl() ? null : throw new InvalidOperationException("No incoming processes");
         }
 
-        public override bool HasProcesses() => base.HasProcesses() || _processQueue.Count > 0;
+        protected override bool HasProcessesImpl() => _processQueue.Count > 0;
 
         public override void RemoveProcess(Process process)
         {

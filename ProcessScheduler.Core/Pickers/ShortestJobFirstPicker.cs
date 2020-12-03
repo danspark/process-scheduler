@@ -8,7 +8,7 @@ namespace ProcessScheduler.Core.Pickers
     {
         private readonly SortedList<TimeSpan, Queue<Process>> _processQueue = new();
 
-        public override bool HasProcesses() => base.HasProcesses() || _processQueue.Values.Any(q => q.Any());
+        protected override bool HasProcessesImpl() => _processQueue.Values.Any(q => q.Any());
 
         public override ProcessToken? GetNext()
         {
@@ -24,7 +24,7 @@ namespace ProcessScheduler.Core.Pickers
                 }
             }
 
-            return HasProcesses() ? null : throw new InvalidOperationException("No incoming processes");
+            return HasProcessesImpl() ? null : throw new InvalidOperationException("No incoming processes");
         }
 
         public override void RemoveProcess(Process process)

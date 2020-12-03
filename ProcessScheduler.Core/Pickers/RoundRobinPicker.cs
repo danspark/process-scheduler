@@ -21,7 +21,7 @@ namespace ProcessScheduler.Core.Pickers
 
             if (nextNode is null)
             {
-                return HasProcesses() ? null : throw new InvalidOperationException("No incoming processes");
+                return HasProcessesImpl() ? null : throw new InvalidOperationException("No incoming processes");
             }
 
             _processes.RemoveFirst();
@@ -46,6 +46,6 @@ namespace ProcessScheduler.Core.Pickers
             return _processes.ToList();
         }
 
-        public override bool HasProcesses() => base.HasProcesses() || _processes.Any();
+        protected override bool HasProcessesImpl() => _processes.Any();
     }
 }

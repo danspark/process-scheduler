@@ -22,9 +22,14 @@ namespace ProcessScheduler.Core.Pickers
 
         public override ProcessToken? GetNext()
         {
-            SortByExecutions();
+            if (_processes.Any())
+            {
+                SortByExecutions();
 
-            return new ProcessToken(this, _processes.First(), Quantum);
+                return new ProcessToken(this, _processes.First(), Quantum);
+            }
+            
+            return HasProcessesImpl() ? null : throw new InvalidOperationException("No incoming processes");
         }
 
         public override void RemoveProcess(Process process)
@@ -43,5 +48,7 @@ namespace ProcessScheduler.Core.Pickers
         {
             _processes.Sort((a, b) => a.Executions.CompareTo(b.Executions));
         }
+
+        protected override bool HasProcessesImpl() => _processes.Any();
     }
 }

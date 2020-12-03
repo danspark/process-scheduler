@@ -19,6 +19,8 @@ namespace ProcessScheduler.ConsoleApp
             }).ParseArguments<ProcessSchedulerOptions>(args)
                 .WithParsed(opt =>
                 {
+                    if (opt.Interactive) Console.WriteLine("Interactive mode, press enter after any update to continue.");
+
                     var processes = ProcessParser.ParseProcesses(opt.FileName);
 
                     var picker = opt.GetProcessPicker();
@@ -32,32 +34,42 @@ namespace ProcessScheduler.ConsoleApp
                     manager.ProcessExecutionStopped += Manager_ProcessExecutionStopped;
 
                     manager.Run(processes, picker);
+
+                    void Picker_ProcessCreated(Process process, ProcessExecutionEventArgs args)
+                    {
+                        Line();
+                        Log(args, $"Process {process} was created.");
+                        Line();
+
+                        ReadLineIfInteractive(opt);
+                    }
+
+                    void Manager_ProcessExecutionStopped(ProcessExecutionEventArgs args)
+                    {
+                        Log(args, $"Process {args.Process} is now stopped. Elapsed: {Ts(args.Process.CurrentExecutionTime)}");
+
+                        ReadLineIfInteractive(opt);
+                    }
+
+                    void Manager_ProcessExecutionStarted(ProcessExecutionEventArgs args)
+                    {
+                        Log(args, $"Process {args.Process} is now running.");
+                    }
+
+                    void Manager_ProcessCompleted(ProcessExecutionEventArgs args)
+                    {
+                        Line();
+                        Log(args, $"Process {args.Process} finished executing.");
+                        Line();
+
+                        ReadLineIfInteractive(opt);
+                    }
                 });
+        }
 
-
-            void Picker_ProcessCreated(Process process, ProcessExecutionEventArgs args)
-            {
-                Line();
-                Log(args, $"Process {process} was created.");
-                Line();
-            }
-
-            void Manager_ProcessExecutionStopped(ProcessExecutionEventArgs args)
-            {
-                Log(args, $"Process {args.Process} is now stopped. Elapsed: {Ts(args.Process.CurrentExecutionTime)}");
-            }
-
-            void Manager_ProcessExecutionStarted(ProcessExecutionEventArgs args)
-            {
-                Log(args, $"Process {args.Process} is now running.");
-            }
-
-            void Manager_ProcessCompleted(ProcessExecutionEventArgs args)
-            {
-                Line();
-                Log(args, $"Process {args.Process} finished executing.");
-                Line();
-            }
+        private static void ReadLineIfInteractive(ProcessSchedulerOptions opt)
+        {
+            if (opt.Interactive) Console.ReadLine();
         }
 
         private static double CpuShare(Process process, TimeSpan totalTime)

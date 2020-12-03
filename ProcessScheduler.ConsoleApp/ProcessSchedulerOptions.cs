@@ -24,6 +24,7 @@ namespace ProcessScheduler.ConsoleApp
             AlgorithmType.Fifo => new FirstInFirstOutPicker(),
             AlgorithmType.Sjf => new ShortestJobFirstPicker(),
             AlgorithmType.Rr => new RoundRobinPicker(TimeSpan.FromMilliseconds(Quantum)),
+            AlgorithmType.Guaranteed => new GuaranteedPicker(TimeSpan.FromMilliseconds(Quantum)),
             _ => throw new NotImplementedException()
         };
     }

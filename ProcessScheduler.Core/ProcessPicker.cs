@@ -9,11 +9,11 @@ namespace ProcessScheduler.Core
 
         public event ProcessCreated? ProcessCreated;
 
-        public virtual bool HasProcesses() => IncomingProcesses > 0;
-
         public abstract ProcessToken? GetNext();
 
         public abstract void RemoveProcess(Process process);
+
+        public bool HasProcesses() => IncomingProcesses > 0 && HasProcessesImpl();
 
         public virtual void AddProcess(Process process, ProcessManager manager)
         {
@@ -39,6 +39,8 @@ namespace ProcessScheduler.Core
         }
 
         protected abstract void AddImpl(Process process);
+
+        protected abstract bool HasProcessesImpl();
 
         public abstract IEnumerable<Process> GetAllProcesses();
     }
