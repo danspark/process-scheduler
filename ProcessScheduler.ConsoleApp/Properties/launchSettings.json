@@ -2,7 +2,7 @@
   "profiles": {
     "ProcessScheduler.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "-f \"test.csv\" -a lottery"
+      "commandLineArgs": "-f \"test.csv\" -a lottery -i"
     }
   }
 }

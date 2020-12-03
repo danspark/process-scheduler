@@ -10,7 +10,7 @@ namespace ProcessScheduler.Core.Csv
 {
     public class ProcessParser
     {
-        public static IEnumerable<Process> ParseProcesses(string file)
+        public static List<Process> ParseProcesses(string file)
         {
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {

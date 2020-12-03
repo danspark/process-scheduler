@@ -20,8 +20,12 @@ namespace ProcessScheduler.ConsoleApp
                 .WithParsed(opt =>
                 {
                     if (opt.Interactive) Console.WriteLine("Interactive mode, press enter after any update to continue.");
-
+                    
                     var processes = ProcessParser.ParseProcesses(opt.FileName);
+                    
+                    Console.WriteLine($"Algorithm: {opt.Algorithm}");
+                    Console.WriteLine($"Quantum: {opt.Quantum}ms");
+                    Console.WriteLine($"Total process count: {processes.Count}");
 
                     var picker = opt.GetProcessPicker();
 
