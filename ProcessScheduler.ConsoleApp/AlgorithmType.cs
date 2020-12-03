@@ -5,7 +5,7 @@
         Fifo,
         Sjf,
         Rr,
-        Guaranteed,
-        Lottery
+        Garantido,
+        Loteria
     }
 }

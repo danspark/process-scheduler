@@ -3,6 +3,7 @@ using ProcessScheduler.Core;
 using ProcessScheduler.Core.Csv;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace ProcessScheduler.ConsoleApp
 {
@@ -10,6 +11,8 @@ namespace ProcessScheduler.ConsoleApp
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.Unicode;
+
             new Parser(settings =>
             {
                 settings.CaseSensitive = false;
@@ -19,13 +22,13 @@ namespace ProcessScheduler.ConsoleApp
             }).ParseArguments<ProcessSchedulerOptions>(args)
                 .WithParsed(opt =>
                 {
-                    if (opt.Interactive) Console.WriteLine("Interactive mode, press enter after any update to continue.");
+                    if (opt.Interactive) Console.WriteLine("Modo interativo, pressione ENTER após qualquer atualização para continuar.");
                     
                     var processes = ProcessParser.ParseProcesses(opt.FileName);
                     
-                    Console.WriteLine($"Algorithm: {opt.Algorithm}");
+                    Console.WriteLine($"Algorítmo:: {opt.Algorithm}");
                     Console.WriteLine($"Quantum: {opt.Quantum}ms");
-                    Console.WriteLine($"Total process count: {processes.Count}");
+                    Console.WriteLine($"Quantidade de processos: {processes.Count}");
 
                     var picker = opt.GetProcessPicker();
 
@@ -42,7 +45,7 @@ namespace ProcessScheduler.ConsoleApp
                     void Picker_ProcessCreated(Process process, ProcessExecutionEventArgs args)
                     {
                         Line();
-                        Log(args, $"Process {process} was created.");
+                        Log(args, $"Processo {process} foi criado.");
                         Line();
 
                         ReadLineIfInteractive(opt);
@@ -50,20 +53,20 @@ namespace ProcessScheduler.ConsoleApp
 
                     void Manager_ProcessExecutionStopped(ProcessExecutionEventArgs args)
                     {
-                        Log(args, $"Process {args.Process} is now stopped. Elapsed: {Ts(args.Process.CurrentExecutionTime)}");
+                        Log(args, $"Processo {args.Process} deixou de executar. Tempo de execução: {Ts(args.Process.CurrentExecutionTime)}");
 
                         ReadLineIfInteractive(opt);
                     }
 
                     void Manager_ProcessExecutionStarted(ProcessExecutionEventArgs args)
                     {
-                        Log(args, $"Process {args.Process} is now running.");
+                        Log(args, $"Processo {args.Process} entrou em execução.");
                     }
 
                     void Manager_ProcessCompleted(ProcessExecutionEventArgs args)
                     {
                         Line();
-                        Log(args, $"Process {args.Process} finished executing.");
+                        Log(args, $"Processo {args.Process} completou sua execução.");
                         Line();
 
                         ReadLineIfInteractive(opt);
