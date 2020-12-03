@@ -25,6 +25,7 @@ namespace ProcessScheduler.ConsoleApp
             AlgorithmType.Sjf => new ShortestJobFirstPicker(),
             AlgorithmType.Rr => new RoundRobinPicker(TimeSpan.FromMilliseconds(Quantum)),
             AlgorithmType.Guaranteed => new GuaranteedPicker(TimeSpan.FromMilliseconds(Quantum)),
+            AlgorithmType.Lottery => new LotteryPicker(TimeSpan.FromMilliseconds(Quantum)),
             _ => throw new NotImplementedException()
         };
     }
