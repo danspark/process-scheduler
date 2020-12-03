@@ -8,7 +8,7 @@
 
 ## Como utilizar
 
-Rode o comando: `scheduler -a <fifo|sjf|rr|garanteed|lottery> -f "local do arquivo" -q <250| apenas para algorítmos interativos> -i <true|false|modo interativo`
+Rode o comando: `scheduler -a <fifo|sjf|rr|garantido|loteria> -p "local do arquivo" -q <250| apenas para algorítmos interativos> -s <true|false|modo interativo`
 
 ## Como baixar
 

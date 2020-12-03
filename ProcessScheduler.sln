@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessScheduler.Core", "ProcessScheduler.Core\ProcessScheduler.Core.csproj", "{05AD4A69-869F-4716-8792-6D95C2A06EEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessScheduler.ConsoleApp", "ProcessScheduler.ConsoleApp\ProcessScheduler.ConsoleApp.csproj", "{674479D0-66FA-4A7A-9681-2A21329AF06E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessScheduler.ConsoleApp", "ProcessScheduler.ConsoleApp\ProcessScheduler.ConsoleApp.csproj", "{674479D0-66FA-4A7A-9681-2A21329AF06E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7FFCF8DF-C7A0-4400-871B-87E38838804F}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
