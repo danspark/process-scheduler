@@ -34,36 +34,46 @@ namespace ProcessScheduler.ConsoleApp
                     manager.Run(processes, picker);
                 });
 
-            static TimeSpan ts(int val) => TimeSpan.FromSeconds(val);
+
+            void Picker_ProcessCreated(Process process, ProcessExecutionEventArgs args)
+            {
+                Line();
+                Log(args, $"Process {process} was created.");
+                Line();
+            }
+
+            void Manager_ProcessExecutionStopped(ProcessExecutionEventArgs args)
+            {
+                Log(args, $"Process {args.Process} is now stopped. Elapsed: {Ts(args.Process.CurrentExecutionTime)}");
+            }
+
+            void Manager_ProcessExecutionStarted(ProcessExecutionEventArgs args)
+            {
+                Log(args, $"Process {args.Process} is now running.");
+            }
+
+            void Manager_ProcessCompleted(ProcessExecutionEventArgs args)
+            {
+                Line();
+                Log(args, $"Process {args.Process} finished executing.");
+                Line();
+            }
         }
 
-        private static void Picker_ProcessCreated(Process process, ProcessExecutionEventArgs args)
+        private static double CpuShare(Process process, TimeSpan totalTime)
         {
-            Line();
-            Log(args, $"Process {process} was created.");
-            Line();
-        }
+            if (process.CurrentExecutionTime == TimeSpan.Zero
+                || totalTime == TimeSpan.Zero)
+            {
+                return 0;
+            }
 
-        private static void Manager_ProcessExecutionStopped(ProcessExecutionEventArgs args)
-        {
-            Log(args, $"Process {args.Process} is now stopped. Elapsed: {Ts(args.Process.CurrentExecutionTime)}");
-        }
-
-        private static void Manager_ProcessExecutionStarted(ProcessExecutionEventArgs args)
-        {
-            Log(args, $"Process {args.Process} is now running.");
-        }
-
-        private static void Manager_ProcessCompleted(ProcessExecutionEventArgs args)
-        {
-            Line();
-            Log(args, $"Process {args.Process} finished executing.");
-            Line();
+            return (process.CurrentExecutionTime / totalTime);
         }
 
         private static void Log(ProcessExecutionEventArgs args, string message)
         {
-            var queue = string.Join("<-", args.Queue.Select(p => $"[{p.Id}]"));
+            var queue = string.Join("<-", args.Queue.Select(p => $"[{p.Name} ({CpuShare(p, args.CurrentTime):0.00})]"));
 
             Console.WriteLine($"|{Ts(args.CurrentTime)}|{queue}|{message}");
         }
