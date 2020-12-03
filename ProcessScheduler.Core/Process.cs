@@ -16,10 +16,14 @@ namespace ProcessScheduler.Core
 
         public TimeSpan TotalExecutionTime { get; set; }
 
+        public int Executions { get; private set; }
+
         public bool IsCompleted() => CurrentExecutionTime == TotalExecutionTime;
 
         public TimeSpan ExecuteFor(TimeSpan duration)
         {
+            Executions++;
+
             var executionTime = CurrentExecutionTime + duration;
 
             if (executionTime > TotalExecutionTime)
